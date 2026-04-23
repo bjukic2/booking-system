@@ -30,6 +30,14 @@ export const clinicService = {
     return clinic;
   },
 
+  async getByDomain(domain: string) {
+    const clinic = await clinicRepository.findByDomain(domain);
+    if (!clinic) {
+      throw new Error("Klinika s ovom domenom ne postoji!");
+    }
+    return clinic;
+  },
+
   async getAll() {
     return clinicRepository.getAll();
   },

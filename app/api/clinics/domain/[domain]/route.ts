@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { clinicService } from "@/backend/modules/clinics/clinic.service";
 
-export async function POST(req: Request) {
+export async function GET(
+  req: Request,
+  { params }: { params: { domain: string } },
+) {
   try {
-    const body = await req.json();
-    const clinic = await clinicService.create(body);
+    const clinic = await clinicService.getByDomain(params.domain);
     return NextResponse.json(clinic);
   } catch (err: unknown) {
     if (err instanceof Error) {
