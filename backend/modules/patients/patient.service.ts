@@ -1,4 +1,4 @@
-import { patientRepository } from "./patient.repository";
+import { patientRepository } from "@/backend/modules/patients/patient.repository";
 import { CreatePatientInput } from "./patient.types";
 
 export const patientService = {
@@ -18,7 +18,7 @@ export const patientService = {
 
     // Provjera postoji li već taj broj mobitela
     if (data.phone) {
-      const existing = await patientRepository.findByPhone(data.phone);
+      const existing = await patientRepository.getByPhone(data.phone);
       if (existing) {
         throw new Error("Pacijent s ovim brojem mobitela već postoji!");
       }
@@ -29,7 +29,7 @@ export const patientService = {
   },
 
   async getById(id: number) {
-    const patient = await patientRepository.findById(id);
+    const patient = await patientRepository.getById(id);
     if (!patient) {
       throw new Error("Pacijent nije pronađen!");
     }
@@ -37,7 +37,11 @@ export const patientService = {
   },
 
   async getByPhone(phone: string) {
-    return patientRepository.findByPhone(phone);
+    return patientRepository.getByPhone(phone);
+  },
+
+  async getByClinic(clinicId: number) {
+    return patientRepository.getByClinic(clinicId);
   },
 
   async getAll() {

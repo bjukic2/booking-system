@@ -21,6 +21,7 @@ export const appointments = pgTable("appointments", {
     .references(() => services.id)
     .notNull(),
   date: timestamp("date", { mode: "string" }).notNull(),
+  endTime: timestamp("end_time", { mode: "string" }).notNull(),
   status: varchar("status", { length: 50 }).default("pending").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

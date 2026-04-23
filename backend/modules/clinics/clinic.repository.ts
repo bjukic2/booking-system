@@ -9,12 +9,12 @@ export const clinicRepository = {
     return row;
   },
 
-  async findById(id: number) {
+  async getById(id: number) {
     const [row] = await db.select().from(clinics).where(eq(clinics.id, id));
     return row;
   },
 
-  async findByDomain(domain: string) {
+  async getByDomain(domain: string) {
     const [row] = await db
       .select()
       .from(clinics)

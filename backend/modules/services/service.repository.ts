@@ -9,16 +9,16 @@ export const serviceRepository = {
     return row;
   },
 
-  async findByClinic(clinicId: number) {
+  async getByClinic(clinicId: number) {
     return db.select().from(services).where(eq(services.clinicId, clinicId));
   },
 
-  async findById(id: number) {
+  async getById(id: number) {
     const [row] = await db.select().from(services).where(eq(services.id, id));
     return row;
   },
 
-  async findByName(clinicId: number, name: string) {
+  async getByName(clinicId: number, name: string) {
     const [row] = await db
       .select()
       .from(services)

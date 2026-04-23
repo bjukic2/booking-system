@@ -1,5 +1,6 @@
-import { serviceRepository } from "./service.repository";
-import { clinicRepository } from "../clinics/clinic.repository";
+import { serviceRepository } from "@/backend/modules/services/service.repository";
+import { clinicRepository } from "@/backend/modules/clinics/clinic.repository";
+
 import { CreateServiceInput } from "./service.types";
 
 export const serviceService = {
@@ -18,13 +19,13 @@ export const serviceService = {
     }
 
     // Provjera postoji li klinika u koju dodajemo uslugu
-    const clinic = await clinicRepository.findById(data.clinicId);
+    const clinic = await clinicRepository.getById(data.clinicId);
     if (!clinic) {
       throw new Error("Klinika ne postoji");
     }
 
     // Provjera postoji li već usluga s takvim nazivom
-    const existing = await serviceRepository.findByName(
+    const existing = await serviceRepository.getByName(
       data.clinicId,
       data.name,
     );
@@ -36,7 +37,7 @@ export const serviceService = {
   },
 
   async getById(id: number) {
-    const service = await serviceRepository.findById(id);
+    const service = await serviceRepository.getById(id);
     if (!service) {
       throw new Error("Usluga nije pronađena!");
     }
@@ -44,6 +45,6 @@ export const serviceService = {
   },
 
   async getByClinic(clinicId: number) {
-    return serviceRepository.findByClinic(clinicId);
+    return serviceRepository.getByClinic(clinicId);
   },
 };

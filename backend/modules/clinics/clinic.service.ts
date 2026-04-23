@@ -1,4 +1,4 @@
-import { clinicRepository } from "./clinic.repository";
+import { clinicRepository } from "@/backend/modules/clinics/clinic.repository";
 import { CreateClinicInput } from "./clinic.types";
 
 export const clinicService = {
@@ -13,7 +13,7 @@ export const clinicService = {
     }
 
     // Provjeri postoji li već
-    const existing = await clinicRepository.findByDomain(data.domain);
+    const existing = await clinicRepository.getByDomain(data.domain);
     if (existing) {
       throw new Error("Klinika s ovom domenom već postoji!");
     }
@@ -23,7 +23,7 @@ export const clinicService = {
   },
 
   async getById(id: number) {
-    const clinic = await clinicRepository.findById(id);
+    const clinic = await clinicRepository.getById(id);
     if (!clinic) {
       throw new Error("Klinika nije pronađena!");
     }
@@ -31,7 +31,7 @@ export const clinicService = {
   },
 
   async getByDomain(domain: string) {
-    const clinic = await clinicRepository.findByDomain(domain);
+    const clinic = await clinicRepository.getByDomain(domain);
     if (!clinic) {
       throw new Error("Klinika s ovom domenom ne postoji!");
     }

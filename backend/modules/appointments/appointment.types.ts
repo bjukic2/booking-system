@@ -3,6 +3,7 @@ export interface CreateAppointmentInput {
   serviceId: number;
   clinicId: number;
   date: string;
+  endTime: string;
 }
 
 export interface Appointment {
@@ -11,5 +12,8 @@ export interface Appointment {
   patientId: number;
   serviceId: number;
   date: string;
+  endTime: string;
   createdAt: string;
 }
+
+export type UpdateAppointmentInput = Omit<Appointment, "id" | "createdAt">;

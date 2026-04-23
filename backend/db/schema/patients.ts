@@ -12,9 +12,9 @@ export const patients = pgTable("patients", {
   clinicId: integer("clinic_id")
     .references(() => clinics.id)
     .notNull(),
-  firstName: varchar("full_name", { length: 255 }).notNull(),
-  lastName: varchar("full_name", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
+  firstName: varchar("first_name", { length: 255 }).notNull(),
+  lastName: varchar("last_name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }),
   phone: varchar("phone", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

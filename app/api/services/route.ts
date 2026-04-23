@@ -14,14 +14,17 @@ export async function GET(req: ClinicRequest) {
   }
 }
 
-export async function POST(req: ClinicRequest) {
+export async function POST(req: Request) {
   try {
     const body = await req.json();
 
+    const clinicId = Number(req.headers.get("x-clinic-id"));
+
     const service = await serviceService.create({
       ...body,
-      clinicId: req.clinicId,
+      clinicId,
     });
+
     return NextResponse.json(service);
   } catch (err: unknown) {
     if (err instanceof Error) {

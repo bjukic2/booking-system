@@ -1,8 +1,10 @@
 import { db } from "@/backend/lib/db";
 import { appointments } from "@/backend/db/schema/appointments";
-import { services } from "@/backend/db/schema/services";
-import { eq, and, lt, gt, sql } from "drizzle-orm";
-import { CreateAppointmentInput } from "./appointment.types";
+import { eq, and, lt, gt } from "drizzle-orm";
+import {
+  CreateAppointmentInput,
+  UpdateAppointmentInput,
+} from "./appointment.types";
 
 export const appointmentRepository = {
   async create(data: CreateAppointmentInput) {
@@ -10,7 +12,7 @@ export const appointmentRepository = {
     return row;
   },
 
-  async findById(id: number) {
+  async getById(id: number) {
     const [row] = await db
       .select()
       .from(appointments)
@@ -18,7 +20,7 @@ export const appointmentRepository = {
     return row;
   },
 
-  async findByClinic(clinicId: number) {
+  async getByClinic(clinicId: number) {
     const [row] = await db
       .select()
       .from(appointments)
@@ -26,19 +28,23 @@ export const appointmentRepository = {
     return row;
   },
 
+  async update(id: number, data: UpdateAppointmentInput) {
+    return db
+      .update(appointments)
+      .set(data)
+      .where(eq(appointments.id, id))
+      .returning();
+  },
+
   async findConflict(clinicId: number, start: string, end: string) {
     const [row] = await db
       .select()
       .from(appointments)
-      .innerJoin(services, eq(appointments.serviceId, services.id))
       .where(
         and(
           eq(appointments.clinicId, clinicId),
           lt(appointments.date, end),
-          gt(
-            sql`${appointments.date} + services.duration_minutes * interval '1 minute'`,
-            start,
-          ),
+          gt(appointments.endTime, start),
         ),
       );
 
