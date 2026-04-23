@@ -1,5 +1,6 @@
 export interface CreatePatientInput {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   clinicId: number;
   phone: string;
   email: string;

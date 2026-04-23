@@ -14,6 +14,14 @@ export const clinicRepository = {
     return row;
   },
 
+  async findByDomain(domain: string) {
+    const [row] = await db
+      .select()
+      .from(clinics)
+      .where(eq(clinics.domain, domain));
+    return row;
+  },
+
   async getAll() {
     return db.select().from(clinics);
   },

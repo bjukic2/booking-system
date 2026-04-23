@@ -1,6 +1,6 @@
 import { db } from "@/backend/lib/db";
 import { services } from "@/backend/db/schema/services";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { CreateServiceInput } from "./service.types";
 
 export const serviceRepository = {
@@ -9,12 +9,20 @@ export const serviceRepository = {
     return row;
   },
 
-  async getAllByClinic(clinicId: number) {
+  async findByClinic(clinicId: number) {
     return db.select().from(services).where(eq(services.clinicId, clinicId));
   },
 
   async findById(id: number) {
     const [row] = await db.select().from(services).where(eq(services.id, id));
+    return row;
+  },
+
+  async findByName(clinicId: number, name: string) {
+    const [row] = await db
+      .select()
+      .from(services)
+      .where(and(eq(services.clinicId, clinicId), eq(services.name, name)));
     return row;
   },
 };

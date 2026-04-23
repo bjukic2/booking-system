@@ -29,4 +29,8 @@ export const patientRepository = {
       .where(eq(patients.phone, phone));
     return row;
   },
+
+  async getAll() {
+    return db.select().from(patients);
+  },
 };
