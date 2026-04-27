@@ -12,3 +12,7 @@ export function proxy(req: Request) {
 
   return res;
 }
+
+export const config = {
+  matcher: ["/api/:path*"],
+};
