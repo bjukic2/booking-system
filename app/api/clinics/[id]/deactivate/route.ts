@@ -3,10 +3,11 @@ import { clinicService } from "@/backend/modules/clinics/clinic.service";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await context.params;
   try {
-    const result = await clinicService.deactivateClinic(Number(params.id));
+    const result = await clinicService.deactivateClinic(Number(id));
     return NextResponse.json(result);
   } catch (err: unknown) {
     if (err instanceof Error) {
