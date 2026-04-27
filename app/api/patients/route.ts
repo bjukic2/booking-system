@@ -17,14 +17,7 @@ export async function GET(req: ClinicRequest) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-
-    const clinicId = Number(req.headers.get("x-clinic-id"));
-
-    const patient = await patientService.create({
-      ...body,
-      clinicId,
-    });
-
+    const patient = await patientService.create(body);
     return NextResponse.json(patient);
   } catch (err: unknown) {
     if (err instanceof Error) {

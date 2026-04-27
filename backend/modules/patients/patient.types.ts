@@ -8,8 +8,19 @@ export interface CreatePatientInput {
 
 export interface Patient {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   email?: string;
+  isActive: boolean;
   createdAt: string;
+  updatedAt: string;
+  deactivatedAt: string;
+}
+
+export interface UpdatePatientInput {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  email?: string | null;
 }

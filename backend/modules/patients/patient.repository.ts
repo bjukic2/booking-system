@@ -1,9 +1,7 @@
 import { db } from "@/backend/lib/db";
 import { patients } from "@/backend/db/schema/patients";
 import { eq } from "drizzle-orm";
-import { CreatePatientInput } from "./patient.types";
-
-console.log("LOADING PATIENT REPO FROM:", __filename);
+import { CreatePatientInput, UpdatePatientInput } from "./patient.types";
 
 export const patientRepository = {
   async create(data: CreatePatientInput) {
@@ -38,5 +36,29 @@ export const patientRepository = {
 
   async getAll() {
     return db.select().from(patients);
+  },
+
+  async updatePatient(id: number, data: UpdatePatientInput) {
+    const [row] = await db
+      .update(patients)
+      .set(data)
+      .where(eq(patients.id, id))
+      .returning();
+
+    return row;
+  },
+
+  async deactivatePatient(id: number) {
+    const [row] = await db
+      .update(patients)
+      .set({
+        isActive: false,
+        updatedAt: new Date(),
+        deactivatedAt: new Date(),
+      })
+      .where(eq(patients.id, id))
+      .returning();
+
+    return row;
   },
 };

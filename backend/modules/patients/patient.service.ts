@@ -1,5 +1,5 @@
 import { patientRepository } from "@/backend/modules/patients/patient.repository";
-import { CreatePatientInput } from "./patient.types";
+import { CreatePatientInput, UpdatePatientInput } from "./patient.types";
 
 export const patientService = {
   async create(data: CreatePatientInput) {
@@ -46,5 +46,37 @@ export const patientService = {
 
   async getAll() {
     return patientRepository.getAll();
+  },
+
+  async updatePatient(id: number, data: UpdatePatientInput) {
+    const existing = await patientRepository.getById(id);
+    if (!existing) {
+      throw new Error("Pacijent nije pronađen!");
+    }
+
+    if (data.email && data.email !== existing.email) {
+      const emailExists = await patientRepository.getByEmail(data.email);
+      if (emailExists) {
+        throw new Error("Pacijent s ovom adresom već postoji!");
+      }
+    }
+
+    if (data.phone && data.phone !== existing.phone) {
+      const phoneExists = await patientRepository.getByPhone(data.phone);
+      if (phoneExists) {
+        throw new Error("Pacijent s ovim brojem mobitela već postoji!");
+      }
+    }
+
+    return patientRepository.updatePatient(id, data);
+  },
+
+  async deactivatePatient(id: number) {
+    const existing = await patientRepository.getById(id);
+    if (!existing) {
+      throw new Error("Pacijent nije pronađen!");
+    }
+
+    return patientRepository.deactivatePatient(id);
   },
 };

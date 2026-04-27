@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { patientService } from "@/backend/modules/patients/patient.service";
 
-export async function GET(
+export async function PATCH(
   req: Request,
-  context: { params: Promise<{ phone: string }> },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const { phone } = await context.params;
+  const { id } = await context.params;
+
   try {
-    const patient = await patientService.getByPhone(phone);
-    return NextResponse.json(patient);
+    const result = await patientService.deactivatePatient(Number(id));
+    return NextResponse.json(result);
   } catch (err: unknown) {
     if (err instanceof Error) {
       return NextResponse.json({ error: err.message }, { status: 400 });
