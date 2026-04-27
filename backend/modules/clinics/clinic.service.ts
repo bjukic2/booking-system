@@ -1,5 +1,5 @@
 import { clinicRepository } from "@/backend/modules/clinics/clinic.repository";
-import { CreateClinicInput } from "./clinic.types";
+import { CreateClinicInput, UpdateClinicInput } from "./clinic.types";
 
 export const clinicService = {
   async create(data: CreateClinicInput) {
@@ -40,5 +40,24 @@ export const clinicService = {
 
   async getAll() {
     return clinicRepository.getAll();
+  },
+
+  async updateClinic(id: number, data: UpdateClinicInput) {
+    const clinic = await clinicRepository.getById(id);
+    if (!clinic) {
+      throw new Error("Klinika nije pronađena!");
+    }
+    return clinicRepository.updateClinic(id, data);
+  },
+
+  async deactivateClinic(id: number) {
+    const clinic = await clinicRepository.getById(id);
+    if (!clinic) {
+      throw new Error("Klinika nije pronađena!");
+    }
+    if (!clinic.isActive) {
+      throw new Error("Klinika je već deaktivirana!");
+    }
+    return clinicRepository.deactivateClinic(id);
   },
 };

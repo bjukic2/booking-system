@@ -71,7 +71,7 @@ export const appointmentService = {
     return appointmentRepository.getByClinic(clinicId);
   },
 
-  async update(id: number, data: UpdateAppointmentInput) {
+  async updateAppointment(id: number, data: UpdateAppointmentInput) {
     // Provjeri postoji li termin
     const existing = await appointmentRepository.getById(id);
     if (!existing) {
@@ -116,7 +116,7 @@ export const appointmentService = {
       }
     }
 
-    return appointmentRepository.update(id, {
+    return appointmentRepository.updateAppointment(id, {
       ...data,
       date: startTime,
       endTime,

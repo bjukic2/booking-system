@@ -28,7 +28,7 @@ export const appointmentRepository = {
     return row;
   },
 
-  async update(id: number, data: UpdateAppointmentInput) {
+  async updateAppointment(id: number, data: UpdateAppointmentInput) {
     return db
       .update(appointments)
       .set(data)
