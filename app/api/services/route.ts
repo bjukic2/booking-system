@@ -18,12 +18,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const clinicId = Number(req.headers.get("x-clinic-id"));
-
-    const service = await serviceService.create({
-      ...body,
-      clinicId,
-    });
+    const service = await serviceService.create(body);
 
     return NextResponse.json(service);
   } catch (err: unknown) {

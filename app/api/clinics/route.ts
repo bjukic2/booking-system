@@ -13,3 +13,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unknown error" }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    const clinics = await clinicService.getAll();
+    return NextResponse.json(clinics);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+    return NextResponse.json({ error: "Unknown error" }, { status: 500 });
+  }
+}
