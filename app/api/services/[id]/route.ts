@@ -18,11 +18,12 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await context.params;
   try {
     const body = await req.json();
-    const updated = await serviceService.updateService(Number(params.id), body);
+    const updated = await serviceService.updateService(Number(id), body);
     return NextResponse.json(updated);
   } catch (err: unknown) {
     if (err instanceof Error) {

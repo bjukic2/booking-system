@@ -4,7 +4,8 @@ import { ClinicRequest } from "@/types/next";
 
 export async function GET(req: ClinicRequest) {
   try {
-    const patients = await patientService.getByClinic(req.clinicId);
+    const clinicId = Number(req.headers.get("x-clinic-id"));
+    const patients = await patientService.getByClinic(clinicId);
     return NextResponse.json(patients);
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -14,10 +15,14 @@ export async function GET(req: ClinicRequest) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: ClinicRequest) {
   try {
+    const clinicId = Number(req.headers.get("x-clinic-id"));
     const body = await req.json();
-    const patient = await patientService.create(body);
+    const patient = await patientService.create({
+      ...body,
+      clinicId,
+    });
     return NextResponse.json(patient);
   } catch (err: unknown) {
     if (err instanceof Error) {
