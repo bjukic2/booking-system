@@ -1,0 +1,1 @@
+ALTER TABLE "appointments" RENAME COLUMN "date" TO "start_time";

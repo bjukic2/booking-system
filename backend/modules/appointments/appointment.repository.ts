@@ -21,32 +21,45 @@ export const appointmentRepository = {
   },
 
   async getByClinic(clinicId: number) {
-    const [row] = await db
+    return db
       .select()
       .from(appointments)
       .where(eq(appointments.clinicId, clinicId));
-    return row;
   },
 
   async updateAppointment(id: number, data: UpdateAppointmentInput) {
-    return db
+    const [row] = await db
       .update(appointments)
       .set(data)
       .where(eq(appointments.id, id))
       .returning();
+
+    return row;
   },
 
   async findConflict(clinicId: number, start: string, end: string) {
-    const [row] = await db
+    return db
       .select()
       .from(appointments)
       .where(
         and(
           eq(appointments.clinicId, clinicId),
-          lt(appointments.date, end),
+          lt(appointments.startTime, end),
           gt(appointments.endTime, start),
         ),
       );
+  },
+
+  async cancelAppointment(id: number) {
+    const [row] = await db
+      .update(appointments)
+      .set({
+        status: "cancelled",
+        isActive: false,
+        cancelledAt: new Date(),
+      })
+      .where(eq(appointments.id, id))
+      .returning();
 
     return row;
   },

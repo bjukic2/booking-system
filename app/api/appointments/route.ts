@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import { appointmentService } from "@/backend/modules/appointments/appointment.service";
+import { ClinicRequest } from "@/types/next";
 
-export async function GET(req: Request) {
+export async function GET(req: ClinicRequest) {
   try {
-    const url = new URL(req.url);
-    const clinicId = Number(url.searchParams.get("clinicId"));
-
+    const clinicId = Number(req.headers.get("x-clinic-id"));
     const appointments = await appointmentService.getByClinic(clinicId);
     return NextResponse.json(appointments);
   } catch (err: unknown) {
@@ -16,11 +15,10 @@ export async function GET(req: Request) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: ClinicRequest) {
   try {
-    const body = await req.json();
-
     const clinicId = Number(req.headers.get("x-clinic-id"));
+    const body = await req.json();
 
     const appointment = await appointmentService.create({
       ...body,

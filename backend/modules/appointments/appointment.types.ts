@@ -2,8 +2,10 @@ export interface CreateAppointmentInput {
   patientId: number;
   serviceId: number;
   clinicId: number;
-  date: string;
+  startTime: string;
   endTime: string;
+  note: string | null;
+  status: "scheduled" | "completed" | "cancelled";
 }
 
 export interface Appointment {
@@ -11,9 +13,21 @@ export interface Appointment {
   clinicId: number;
   patientId: number;
   serviceId: number;
-  date: string;
+  startTime: string;
   endTime: string;
+  status: "scheduled" | "completed" | "cancelled";
+  note: string | null;
+  isActive: boolean;
   createdAt: string;
+  updatedAt: string;
+  cancelledAt: string | null;
 }
 
-export type UpdateAppointmentInput = Omit<Appointment, "id" | "createdAt">;
+export type UpdateAppointmentInput = {
+  patientId?: number;
+  serviceId?: number;
+  startTime?: string;
+  endTime?: string;
+  note: string | null;
+  status?: "scheduled" | "completed" | "cancelled";
+};

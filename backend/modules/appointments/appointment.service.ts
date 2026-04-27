@@ -1,7 +1,6 @@
 import { appointmentRepository } from "@/backend/modules/appointments/appointment.repository";
 import { patientRepository } from "@/backend/modules/patients/patient.repository";
 import { serviceRepository } from "@/backend/modules/services/service.repository";
-import { clinicRepository } from "@/backend/modules/clinics/clinic.repository";
 
 import {
   CreateAppointmentInput,
@@ -10,18 +9,12 @@ import {
 
 export const appointmentService = {
   async create(data: CreateAppointmentInput) {
-    const { clinicId, patientId, serviceId, date } = data;
-
+    const { clinicId, patientId, serviceId, startTime, note } = data;
     // Osnovne provjere
     if (!clinicId) throw new Error("ID klinike je obavezan!");
     if (!patientId) throw new Error("ID pacijenta je obavezan!");
     if (!serviceId) throw new Error("ID usluge je obavezan!");
-    if (!date) throw new Error("Datum termina je obavezan!");
-
-    console.log("CLINIC REPO:", clinicRepository);
-    // Provjera postoji li klinika
-    const clinic = await clinicRepository.getById(clinicId);
-    if (!clinic) throw new Error("Klinika ne postoji!");
+    if (!startTime) throw new Error("Datum termina je obavezan!");
 
     //Provjera postoji li pacijent
     const patient = await patientRepository.getById(patientId);
@@ -32,20 +25,20 @@ export const appointmentService = {
     if (!service) throw new Error("Usluga ne postoji!");
 
     // Računanje vremena završetka usluge
-    const start = new Date(date);
+    const start = new Date(startTime);
     const end = new Date(start.getTime() + service.durationMinutes * 60000);
 
     const startISO = start.toISOString();
     const endISO = end.toISOString();
 
     // Provjeri preklapanja termina
-    const conflict = await appointmentRepository.findConflict(
+    const conflicts = await appointmentRepository.findConflict(
       clinicId,
       startISO,
       endISO,
     );
 
-    if (conflict) {
+    if (conflicts.length > 0) {
       throw new Error("Ovaj termin se preklapa s već postojećim terminom!");
     }
 
@@ -54,8 +47,10 @@ export const appointmentService = {
       clinicId,
       patientId,
       serviceId,
-      date: startISO,
+      startTime: startISO,
       endTime: endISO,
+      note: note ?? null,
+      status: "scheduled",
     });
   },
 
@@ -98,28 +93,38 @@ export const appointmentService = {
     }
 
     // Provjeri konflikt termina
-    const startTime = data.date ?? existing.date;
+    const startTime = data.startTime ?? existing.startTime;
 
     const end = new Date(startTime);
     end.setMinutes(end.getMinutes() + service.durationMinutes);
     const endTime = end.toISOString();
 
-    if (data.date || data.serviceId) {
-      const conflict = await appointmentRepository.findConflict(
+    if (data.startTime || data.serviceId) {
+      const conflicts = await appointmentRepository.findConflict(
         existing.clinicId,
         startTime,
         endTime,
       );
 
-      if (conflict && conflict.id !== id) {
+      const hasOtherConflict = conflicts.some((c) => c.id !== id);
+      if (hasOtherConflict) {
         throw new Error("Termin se preklapa s postojećim!");
       }
     }
 
     return appointmentRepository.updateAppointment(id, {
       ...data,
-      date: startTime,
+      startTime: startTime,
       endTime,
     });
+  },
+
+  async cancelAppointment(id: number) {
+    const existing = await appointmentRepository.getById(id);
+    if (!existing) {
+      throw new Error("Termin ne postoji!");
+    }
+
+    return appointmentRepository.cancelAppointment(id);
   },
 };
