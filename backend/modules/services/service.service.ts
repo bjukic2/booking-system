@@ -1,7 +1,7 @@
 import { serviceRepository } from "@/backend/modules/services/service.repository";
 import { clinicRepository } from "@/backend/modules/clinics/clinic.repository";
 
-import { CreateServiceInput } from "./service.types";
+import { CreateServiceInput, UpdateServiceInput } from "./service.types";
 
 export const serviceService = {
   async create(data: CreateServiceInput) {
@@ -46,5 +46,26 @@ export const serviceService = {
 
   async getByClinic(clinicId: number) {
     return serviceRepository.getByClinic(clinicId);
+  },
+
+  async updateService(id: number, data: UpdateServiceInput) {
+    const existing = await serviceRepository.getById(id);
+    if (!existing) {
+      throw new Error("Usluga nije pronađena!");
+    }
+
+    return serviceRepository.updateService(id, data);
+  },
+
+  async deactivateService(id: number) {
+    const existing = await serviceRepository.getById(id);
+    if (!existing) {
+      throw new Error("Usluga nije pronađena!");
+    }
+    if (!existing.isActive) {
+      throw new Error("Usluga je već deaktivirana!");
+    }
+
+    return serviceRepository.deactivateService(id);
   },
 };

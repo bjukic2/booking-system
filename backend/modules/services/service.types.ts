@@ -10,7 +10,18 @@ export interface Service {
   id: number;
   clinicId: number;
   name: string;
-  duration: number;
+  description: string | null;
+  durationMinutes: number;
   price: number;
+  isActive: boolean;
   createdAt: string;
+  updatedAt: string;
+  deactivatedAt: string | null;
+}
+
+export interface UpdateServiceInput {
+  name?: string;
+  description?: string;
+  durationMinutes?: number;
+  price?: number;
 }
