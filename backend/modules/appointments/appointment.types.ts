@@ -31,3 +31,26 @@ export type UpdateAppointmentInput = {
   note: string | null;
   status?: "scheduled" | "completed" | "cancelled";
 };
+
+export interface CalendarAppointment {
+  id: number;
+  clinicId: number;
+  patientId: number;
+  serviceId: number;
+  startTime: string;
+  endTime: string;
+  status: string;
+  note: string | null;
+  patient: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    phone: string;
+  };
+  service: {
+    id: number;
+    name: string;
+    durationMinutes: number;
+    price: number;
+  };
+}

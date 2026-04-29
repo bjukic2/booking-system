@@ -1,5 +1,7 @@
 import { db } from "@/backend/lib/db";
 import { appointments } from "@/backend/db/schema/appointments";
+import { services } from "@/backend/db/schema/services";
+import { patients } from "@/backend/db/schema/patients";
 import { eq, and, lt, gt } from "drizzle-orm";
 import {
   CreateAppointmentInput,
@@ -13,18 +15,22 @@ export const appointmentRepository = {
   },
 
   async getById(id: number) {
-    const [row] = await db
-      .select()
-      .from(appointments)
-      .where(eq(appointments.id, id));
-    return row;
+    return db.query.appointments.findFirst({
+      where: eq(appointments.id, id),
+      with: {
+        patient: true,
+        service: true,
+      },
+    });
   },
-
   async getByClinic(clinicId: number) {
-    return db
-      .select()
-      .from(appointments)
-      .where(eq(appointments.clinicId, clinicId));
+    return db.query.appointments.findMany({
+      where: eq(appointments.clinicId, clinicId),
+      with: {
+        patient: true,
+        service: true,
+      },
+    });
   },
 
   async updateAppointment(id: number, data: UpdateAppointmentInput) {
@@ -38,16 +44,17 @@ export const appointmentRepository = {
   },
 
   async findConflict(clinicId: number, start: string, end: string) {
-    return db
-      .select()
-      .from(appointments)
-      .where(
-        and(
-          eq(appointments.clinicId, clinicId),
-          lt(appointments.startTime, end),
-          gt(appointments.endTime, start),
-        ),
-      );
+    return db.query.appointments.findMany({
+      where: and(
+        eq(appointments.clinicId, clinicId),
+        lt(appointments.startTime, end),
+        gt(appointments.endTime, start),
+      ),
+      with: {
+        patient: true,
+        service: true,
+      },
+    });
   },
 
   async cancelAppointment(id: number) {
