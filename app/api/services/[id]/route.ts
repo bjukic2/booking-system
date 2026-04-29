@@ -3,10 +3,11 @@ import { serviceService } from "@/backend/modules/services/service.service";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await context.params;
   try {
-    const service = await serviceService.getById(Number(params.id));
+    const service = await serviceService.getById(Number(id));
     return NextResponse.json(service);
   } catch (err: unknown) {
     if (err instanceof Error) {
