@@ -39,7 +39,7 @@ export interface CalendarAppointment {
   serviceId: number;
   startTime: string;
   endTime: string;
-  status: string;
+  status: "scheduled" | "completed" | "cancelled";
   note: string | null;
   patient: {
     id: number;
