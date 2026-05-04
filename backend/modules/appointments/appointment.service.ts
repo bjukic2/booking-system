@@ -127,4 +127,12 @@ export const appointmentService = {
 
     return appointmentRepository.cancelAppointment(id);
   },
+
+  async getAppointmentsByDate(clinicId: number, date: string) {
+    if (!date) {
+      throw new Error("Date is required");
+    }
+
+    return appointmentRepository.getAppointmentsByDate(clinicId, date);
+  },
 };

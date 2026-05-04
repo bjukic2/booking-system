@@ -1,30 +1,52 @@
 "use client";
-import type { CalendarAppointment } from "@/backend/modules/appointments/appointment.types";
-import { UpdateAppointmentModule } from "./UpdateAppoinmentsModule";
+
 import { useState } from "react";
+import { UpdateAppointmentModule } from "./UpdateAppoinmentsModule";
+import { useAppointmentsByDate } from "@/lib/hooks/useAppointmentsByDate";
+import type { CalendarAppointment } from "@/backend/modules/appointments/appointment.types";
 
 function formatTime(time: string) {
-  return new Date(time).toLocaleDateString("hr-HR", {
+  return new Date(time).toLocaleTimeString("hr-HR", {
     hour: "2-digit",
     minute: "2-digit",
   });
 }
 
-export function DayView({
-  appointments,
-}: {
-  appointments: CalendarAppointment[];
-}) {
+export function DayView({ date }: { date: string }) {
+  console.log("DayView → date:", date);
+  const {
+    data: appointments = [],
+    isLoading,
+    error,
+  } = useAppointmentsByDate(date);
   const [selected, setSelected] = useState<CalendarAppointment | null>(null);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-3xl mx-auto mt-10 text-center text-gray-500">
+        Učitavanje termina...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-3xl mx-auto mt-10 text-center text-red-600">
+        Greška pri dohvaćanju termina.
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="max-w-3xl mx-auto mt-10 space-y-4">
-        <h1 className="text-2xl font-bold mb-6">Dnevni raspored</h1>
+        <h1 className="text-2xl font-bold mb-6">
+          Dnevni raspored — {new Date(date).toLocaleDateString("hr-HR")}
+        </h1>
 
         {appointments.length === 0 && (
           <div className="text-center text-gray-500">
-            Nema termina za danas.
+            Nema termina za ovaj dan.
           </div>
         )}
 
@@ -53,11 +75,11 @@ export function DayView({
                   </div>
                   <div
                     className={`
-                    text-xs font-semibold px-2 py-1 rounded-full text-white
-                    ${appointment.status === "scheduled" ? "bg-blue-500" : ""}
-                    ${appointment.status === "completed" ? "bg-green-600" : ""}
-                    ${appointment.status === "cancelled" ? "bg-red-500" : ""}
-                  `}
+                      text-xs font-semibold px-2 py-1 rounded-full text-white
+                      ${appointment.status === "scheduled" ? "bg-blue-500" : ""}
+                      ${appointment.status === "completed" ? "bg-green-600" : ""}
+                      ${appointment.status === "cancelled" ? "bg-red-500" : ""}
+                    `}
                   >
                     {appointment.status}
                   </div>
@@ -73,6 +95,7 @@ export function DayView({
           ))}
         </div>
       </div>
+
       {selected && (
         <UpdateAppointmentModule
           appointment={selected}
