@@ -33,6 +33,5 @@ export function cancelAppointment(id: number) {
 export function getAppointmentsByDate(
   date: string,
 ): Promise<CalendarAppointment[]> {
-  console.log("getAppointmentsByDate → POKRENUT");
   return apiFetch(`/api/appointments/po-datumu?date=${date}`);
 }

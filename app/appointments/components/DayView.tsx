@@ -13,7 +13,6 @@ function formatTime(time: string) {
 }
 
 export function DayView({ date }: { date: string }) {
-  console.log("DayView → date:", date);
   const {
     data: appointments = [],
     isLoading,
