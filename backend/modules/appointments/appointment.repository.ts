@@ -55,15 +55,17 @@ export const appointmentRepository = {
     });
   },
 
-  async cancelAppointment(id: number) {
+  async cancelAppointment(id: number, clinicId: number) {
     const [row] = await db
       .update(appointments)
       .set({
         status: "cancelled",
         isActive: false,
         cancelledAt: new Date(),
+        updatedAt: new Date(),
       })
-      .where(eq(appointments.id, id))
+      .where(and(eq(appointments.id, id), eq(appointments.clinicId, clinicId)))
+
       .returning();
 
     return row;
@@ -90,5 +92,22 @@ export const appointmentRepository = {
       },
       orderBy: (a, { asc }) => [asc(a.startTime)],
     });
+  },
+
+  async updateAppointmentNote(
+    id: number,
+    clinicId: number,
+    note: string | null,
+  ) {
+    const [row] = await db
+      .update(appointments)
+      .set({
+        note,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(appointments.id, id), eq(appointments.clinicId, clinicId)))
+      .returning();
+
+    return row;
   },
 };

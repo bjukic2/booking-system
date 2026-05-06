@@ -119,13 +119,17 @@ export const appointmentService = {
     });
   },
 
-  async cancelAppointment(id: number) {
+  async cancelAppointment(id: number, clinicId: number) {
     const existing = await appointmentRepository.getById(id);
     if (!existing) {
       throw new Error("Termin ne postoji!");
     }
 
-    return appointmentRepository.cancelAppointment(id);
+    if (existing.status === "cancelled") {
+      throw new Error("Termin je već otkazan!");
+    }
+
+    return appointmentRepository.cancelAppointment(id, clinicId);
   },
 
   async getAppointmentsByDate(clinicId: number, date: string) {
@@ -134,5 +138,20 @@ export const appointmentService = {
     }
 
     return appointmentRepository.getAppointmentsByDate(clinicId, date);
+  },
+
+  async updateAppointmentNote(
+    id: number,
+    clinicId: number,
+    note: string | null,
+  ) {
+    const existing = await appointmentRepository.getById(id);
+    if (!existing) throw new Error("Termin ne postoji!");
+
+    return await appointmentRepository.updateAppointmentNote(
+      id,
+      clinicId,
+      note,
+    );
   },
 };
