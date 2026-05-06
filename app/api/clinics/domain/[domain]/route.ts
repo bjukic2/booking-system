@@ -3,10 +3,11 @@ import { clinicService } from "@/backend/modules/clinics/clinic.service";
 
 export async function GET(
   req: Request,
-  { params }: { params: { domain: string } },
+  context: { params: Promise<{ domain: string }> },
 ) {
+  const { domain } = await context.params;
   try {
-    const clinic = await clinicService.getByDomain(params.domain);
+    const clinic = await clinicService.getByDomain(domain);
     return NextResponse.json(clinic);
   } catch (err: unknown) {
     if (err instanceof Error) {
