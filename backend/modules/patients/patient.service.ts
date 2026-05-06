@@ -44,8 +44,9 @@ export const patientService = {
     return patientRepository.getByClinic(clinicId);
   },
 
-  async getAll() {
-    return patientRepository.getAll();
+  async searchPatients(clinicId: number, query: string) {
+    if (!query || query.trim().length < 2) return [];
+    return patientRepository.searchPatients(clinicId, query.trim());
   },
 
   async updatePatient(id: number, data: UpdatePatientInput) {
@@ -78,5 +79,17 @@ export const patientService = {
     }
 
     return patientRepository.deactivatePatient(id);
+  },
+
+  async getPaginatedPatients(clinicId: number, limit: number, offset: number) {
+    return await patientRepository.getPaginatedPatients(
+      clinicId,
+      limit,
+      offset,
+    );
+  },
+
+  async countPatients(clinicId: number) {
+    return await patientRepository.countPatients(clinicId);
   },
 };
