@@ -68,4 +68,9 @@ export const serviceService = {
 
     return serviceRepository.deactivateService(id);
   },
+
+  async searchServices(clinicId: number, query: string) {
+    if (!query || query.trim().length < 2) return [];
+    return serviceRepository.searchServices(clinicId, query.trim());
+  },
 };

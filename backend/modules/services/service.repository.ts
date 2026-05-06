@@ -1,6 +1,6 @@
 import { db } from "@/backend/lib/db";
 import { services } from "@/backend/db/schema/services";
-import { eq, and } from "drizzle-orm";
+import { eq, and, ilike } from "drizzle-orm";
 import { CreateServiceInput, UpdateServiceInput } from "./service.types";
 
 export const serviceRepository = {
@@ -51,5 +51,18 @@ export const serviceRepository = {
       .returning();
 
     return row;
+  },
+
+  async searchServices(clinicId: number, query: string) {
+    return db
+      .select()
+      .from(services)
+      .where(
+        and(
+          eq(services.clinicId, clinicId),
+          eq(services.isActive, true),
+          ilike(services.name, `%${query}%`),
+        ),
+      );
   },
 };
