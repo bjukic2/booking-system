@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { serviceService } from "@/backend/modules/services/service.service";
-import { ClinicRequest } from "@/types/next";
 
-export async function GET(req: ClinicRequest) {
+export async function GET(req: Request) {
   try {
     const clinicId = Number(req.headers.get("x-clinic-id"));
     const services = await serviceService.getByClinic(clinicId);

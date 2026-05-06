@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { appointmentService } from "@/backend/modules/appointments/appointment.service";
-import { ClinicRequest } from "@/types/next";
 
-export async function GET(req: ClinicRequest) {
+export async function GET(req: Request) {
   try {
     const clinicId = Number(req.headers.get("x-clinic-id"));
     const url = new URL(req.url);
     const date = url.searchParams.get("date");
-    console.log("API → clinicId:", req.headers.get("x-clinic-id"));
 
     if (!clinicId) {
       return NextResponse.json(

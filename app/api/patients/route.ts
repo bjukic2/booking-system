@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { patientService } from "@/backend/modules/patients/patient.service";
-import { ClinicRequest } from "@/types/next";
 
-export async function GET(req: ClinicRequest) {
+export async function GET(req: Request) {
   try {
     const clinicId = Number(req.headers.get("x-clinic-id"));
     const { searchParams } = new URL(req.url);
@@ -29,7 +28,7 @@ export async function GET(req: ClinicRequest) {
   }
 }
 
-export async function POST(req: ClinicRequest) {
+export async function POST(req: Request) {
   try {
     const clinicId = Number(req.headers.get("x-clinic-id"));
     const body = await req.json();

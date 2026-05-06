@@ -1,8 +1,7 @@
 import { patientService } from "@/backend/modules/patients/patient.service";
-import { ClinicRequest } from "@/types/next";
 import { NextResponse } from "next/server";
 
-export async function GET(req: ClinicRequest) {
+export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query") ?? "";

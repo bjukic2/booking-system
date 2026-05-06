@@ -1,9 +1,8 @@
 import { appointmentService } from "@/backend/modules/appointments/appointment.service";
-import { ClinicRequest } from "@/types/next";
 import { NextResponse } from "next/server";
 
 export async function PATCH(
-  req: ClinicRequest,
+  req: Request,
   context: { params: Promise<{ id: string }> },
 ) {
   const { id } = await context.params;

@@ -48,7 +48,6 @@ export function UpdateAppointmentModule({ appointment, onClose }: Props) {
           </p>
         </div>
 
-        {/* Usluga */}
         <div>
           <label className="text-sm font-medium">Usluga</label>
           <select
@@ -64,7 +63,6 @@ export function UpdateAppointmentModule({ appointment, onClose }: Props) {
           </select>
         </div>
 
-        {/* Status */}
         <div>
           <label className="text-sm font-medium">Status</label>
           <select
@@ -82,7 +80,6 @@ export function UpdateAppointmentModule({ appointment, onClose }: Props) {
           </select>
         </div>
 
-        {/* Bilješka */}
         <div>
           <label className="text-sm font-medium">Bilješka</label>
           <textarea
@@ -93,7 +90,6 @@ export function UpdateAppointmentModule({ appointment, onClose }: Props) {
           />
         </div>
 
-        {/* Gumbi */}
         <button
           onClick={handleSubmit}
           disabled={updateMutation.isPending}
