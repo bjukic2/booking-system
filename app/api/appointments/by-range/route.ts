@@ -3,27 +3,30 @@ import { appointmentService } from "@/backend/modules/appointments/appointment.s
 
 export async function GET(req: Request) {
   try {
-    const clinicId = Number(req.headers.get("x-clinic-id"));
-    const url = new URL(req.url);
-    const date = url.searchParams.get("date");
+    const { searchParams } = new URL(req.url);
 
-    if (!clinicId) {
+    const start = searchParams.get("start");
+    const end = searchParams.get("end");
+
+    if (!start || !end) {
       return NextResponse.json(
-        { error: "Klinika ne postoji!" },
+        { error: "Parametri 'start' i 'end' su obavezni!" },
         { status: 400 },
       );
     }
 
-    if (!date) {
-      return NextResponse.json({ error: "Fali datum!" }, { status: 400 });
-    }
+    const clinicId = Number(req.headers.get("x-clinic-id"));
 
-    const appointments = await appointmentService.getAppointmentsByDate(
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    const result = await appointmentService.getAppointmentByDateRange(
       clinicId,
-      date,
+      startDate,
+      endDate,
     );
 
-    return NextResponse.json(appointments);
+    return NextResponse.json(result);
   } catch (err: unknown) {
     if (err instanceof Error) {
       return NextResponse.json({ error: err.message }, { status: 400 });
