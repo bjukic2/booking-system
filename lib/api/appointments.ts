@@ -33,5 +33,12 @@ export function cancelAppointment(id: number) {
 export function getAppointmentsByDate(
   date: string,
 ): Promise<CalendarAppointment[]> {
-  return apiFetch(`/api/appointments/po-datumu?date=${date}`);
+  return apiFetch(`/api/appointments/by-date?date=${date}`);
+}
+
+export function getAppointmentsByWeek(
+  start: string,
+  end: string,
+): Promise<CalendarAppointment[]> {
+  return apiFetch(`/api/appointments/by-range?start=${start}&end=${end}`);
 }

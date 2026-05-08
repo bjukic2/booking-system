@@ -154,4 +154,17 @@ export const appointmentService = {
       note,
     );
   },
+
+  async getAppointmentByDateRange(clinicId: number, start: Date, end: Date) {
+    if (!clinicId) throw new Error("clinicId je obavezan!");
+    if (!start || !end) throw new Error("'start' i 'end' su obavezni!");
+
+    end.setHours(23, 59, 59, 999);
+
+    return appointmentRepository.findAppointmentByDateRange(
+      clinicId,
+      start,
+      end,
+    );
+  },
 };

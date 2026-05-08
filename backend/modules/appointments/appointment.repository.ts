@@ -1,6 +1,6 @@
 import { db } from "@/backend/lib/db";
 import { appointments } from "@/backend/db/schema/appointments";
-import { eq, and, lt, gt } from "drizzle-orm";
+import { eq, and, lt, gt, gte, lte } from "drizzle-orm";
 import {
   CreateAppointmentInput,
   UpdateAppointmentInput,
@@ -109,5 +109,21 @@ export const appointmentRepository = {
       .returning();
 
     return row;
+  },
+
+  async findAppointmentByDateRange(clinicId: number, start: Date, end: Date) {
+    return db.query.appointments.findMany({
+      where: and(
+        eq(appointments.clinicId, clinicId),
+        eq(appointments.isActive, true),
+        gte(appointments.startTime, start.toISOString()),
+        lte(appointments.startTime, end.toISOString()),
+      ),
+      with: {
+        patient: true,
+        service: true,
+      },
+      orderBy: (a, { asc }) => [asc(a.startTime)],
+    });
   },
 };
