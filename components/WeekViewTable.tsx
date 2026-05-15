@@ -14,7 +14,6 @@ export default function WeekViewTable({
   weekStart,
   appointments,
   onSelectAppointment,
-  selectedDate,
 }: Props) {
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
